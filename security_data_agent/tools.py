@@ -1,7 +1,7 @@
 import logging
 import os
 import re
-from google.adk.tools.mcp_tool import McpToolset, StreamableHTTPConnectionParams, SseConnectionParams
+from google.adk.tools.mcp_tool import McpToolset, StreamableHTTPConnectionParams
 from google.cloud import discoveryengine_v1alpha as discoveryengine
 from google.protobuf.json_format import MessageToDict
 from google.oauth2.credentials import Credentials
@@ -14,9 +14,10 @@ logger = logging.getLogger(__name__)
 def search_with_gemini_enterprise_connector(query_text: str, tool_context: ToolContext):
     """Performs a search using the official Google Cloud Discovery Engine client library (v1alpha)."""
     try:
-        token = _get_access_token_from_context(tool_context)
-        credentials = Credentials(token=token)
-        client = discoveryengine.SearchServiceClient(credentials=credentials)
+        # token = _get_access_token_from_context(tool_context)
+        # credentials = Credentials(token=token)
+        # client = discoveryengine.SearchServiceClient(credentials=credentials)
+        client = discoveryengine.SearchServiceClient()
         logger.info("Using token from context for SearchServiceClient")
     except Exception as e:
         logger.info(f"Falling back to default credentials for SearchServiceClient: {e}")
@@ -32,6 +33,7 @@ def search_with_gemini_enterprise_connector(query_text: str, tool_context: ToolC
     )
     response = client.search(request)
     return [MessageToDict(result._pb) for result in response.results]
+
 
 def create_mcp_toolset(url: str) -> McpToolset:
     if not url:
@@ -52,7 +54,8 @@ def create_mcp_toolset(url: str) -> McpToolset:
     return McpToolset(connection_params=params)
 
 
-CLIENT_AUTH_NAME = "security-agent-google-workspace"
+# CLIENT_AUTH_NAME = "security-agent-google-workspace"
+CLIENT_AUTH_NAME = "security-agent-gws-oauth"
 
 def _get_access_token_from_context(tool_context: ToolContext) -> str:
     """Helper method to dynamically parse the intercepted bearer token from the context state."""
@@ -64,17 +67,3 @@ def _get_access_token_from_context(tool_context: ToolContext) -> str:
         return state_dict.get(matching_keys[0])
     raise Exception(f"No bearer token found in ToolContext state matching pattern {pattern.pattern}")
 
-def auth_header_provider(tool_context: ToolContext) -> dict[str, str]:
-    token = _get_access_token_from_context(tool_context)
-    return {"Authorization": f"Bearer {token}"}
-
-def create_vertexai_mcp_toolset() -> McpToolset:
-    return McpToolset(
-        connection_params=StreamableHTTPConnectionParams(
-            url="https://discoveryengine.googleapis.com/mcp",
-            timeout=15.0,
-            sse_read_timeout=15.0
-        ),
-        tool_filter=['search'],
-        header_provider=auth_header_provider
-    )

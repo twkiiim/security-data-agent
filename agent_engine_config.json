@@ -10,6 +10,6 @@
         "JIRA_MCP_URL": "https://jira-mcp-45488079772.us-central1.run.app/mcp",
         "GOOGLE_CLOUD_PROJECT_ID": "ge-for-agentic-security",
         "GOOGLE_CLOUD_PROJECT_NUMBER": "45488079772",
-        "GEMINI_ENTERPRISE_DATA_STORE": "security-google-drive_google_drive"
+        "GEMINI_ENTERPRISE_DATA_STORE": "gcs-connector_gcs_store"
     }
 }
