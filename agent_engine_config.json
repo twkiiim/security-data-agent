@@ -1,15 +1,16 @@
 {
-    "display_name": "Security Data Agent",
+    "display_name": "security_data_agent",
     "staging_bucket": "agent-engine-deployment-taewoo",
-    "service_account": "gti-agent-sa@ge-for-agentic-security.iam.gserviceaccount.com",
+    "service_account": "agent-engine-security-demo-sa@adk-handson-taewoo.iam.gserviceaccount.com",
     "env_vars": {
         "GOOGLE_CLOUD_AGENT_ENGINE_ENABLE_TELEMETRY": "true",
         "OTEL_INSTRUMENTATION_GENAI_CAPTURE_MESSAGE_CONTENT": "true",
         "GTI_MCP_URL": "https://stg-gti-mcp-45488079772.us-central1.run.app/mcp",
         "SECOPS_MCP_URL": "https://stg-secops-mcp-45488079772.us-central1.run.app/mcp",
         "JIRA_MCP_URL": "https://jira-mcp-45488079772.us-central1.run.app/mcp",
-        "GOOGLE_CLOUD_PROJECT_ID": "ge-for-agentic-security",
-        "GOOGLE_CLOUD_PROJECT_NUMBER": "45488079772",
+        "GOOGLE_CLOUD_PROJECT_ID": "adk-handson-taewoo",
+        "GOOGLE_CLOUD_LOCATION": "global",
+        "GOOGLE_CLOUD_PROJECT_NUMBER": "387309969279",
         "GEMINI_ENTERPRISE_DATA_STORE": "gcs-connector_gcs_store"
     }
 }
