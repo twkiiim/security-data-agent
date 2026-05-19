@@ -42,13 +42,13 @@ jira_mcp_server_url = os.getenv("JIRA_MCP_URL")
 
 # Using Vertex AI model path as requested
 vertex_project = os.getenv("GOOGLE_CLOUD_PROJECT_ID")
-vertex_model = f"projects/{vertex_project}/locations/us-central1/publishers/google/models/gemini-2.5-flash"
+# vertex_model = f"projects/{vertex_project}/locations/us-central1/publishers/google/models/gemini-2.5-flash"
 
 
 
 # Renamed to root_agent as requested
 root_agent = Agent(
-    model=vertex_model,
+    model="gemini-3.1-flash-lite-preview",
     name="security_data_agent",
     description="An agent that can help with threat intelligence and security operations",
     instruction=SYSTEM_INSTRUCTION,
@@ -61,4 +61,3 @@ root_agent = Agent(
 )
 
 logger.info(f"ADK Agent created successfully, connected to {gti_mcp_server_url}")
-logger.info(f"Using Vertex AI model: {vertex_model}")

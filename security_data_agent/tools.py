@@ -39,19 +39,25 @@ def create_mcp_toolset(url: str) -> McpToolset:
     if not url:
         raise ValueError("MCP URL cannot be None")
         
+    from urllib.parse import urlparse
+    parsed_url = urlparse(url)
+    audience = f"{parsed_url.scheme}://{parsed_url.netloc}"
+
+    def dynamic_jwt_header_provider(session_state):
+        print(f"[Header Provider] Fetching token for audience: {audience}")
+        from .utils import get_id_token
+        token = get_id_token(audience)
+        headers = {"Authorization": f"Bearer {token}"} if token else {}
+        return headers
+
     if url.startswith("http://localhost") or url.startswith("http://127.0.0.1"):
         logger.info(f"Connecting to local MCP server at {url}")
         params = StreamableHTTPConnectionParams(url=url)
+        return McpToolset(connection_params=params)
     else:
         logger.info(f"Connecting to remote MCP server at {url}")
-        from urllib.parse import urlparse
-        parsed_url = urlparse(url)
-        audience = f"{parsed_url.scheme}://{parsed_url.netloc}"
-        token = get_id_token(audience)
-        headers = {"Authorization": f"Bearer {token}"} if token else {}
-        params = StreamableHTTPConnectionParams(url=url, headers=headers)
-        
-    return McpToolset(connection_params=params)
+        params = StreamableHTTPConnectionParams(url=url)
+        return McpToolset(connection_params=params, header_provider=dynamic_jwt_header_provider)
 
 
 # CLIENT_AUTH_NAME = "security-agent-google-workspace"
